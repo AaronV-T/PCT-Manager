@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Goals & Plans| PCT Manager</title>
+<style>
+	td { width:16%; }
+	textarea { resize:none; width:100%; height:150px; }
+</style>
+</head>
+<body>
+<h2 style="text-align:center">PCT Manager<span id="versionSpan"></span></h2>
+<div id="loadingDiv">Loading goals and plans, please wait.</div>
+<div id="mainDiv" style="display:none;overflow:hidden;">
+	<h3 style="text-align:center;">Goals & Plans</h3>
+	<p id="lastUpdateText" style="text-align:center;">Last Update:</p>
+	<br>
+	<div>
+		<table style="margin:0px auto; width:95%;">
+			<tr>
+				<th></th>
+				<th>Physical</th>
+				<th>Mental</th>
+				<th>Economical</th>
+				<th>Social</th>
+				<th>Spiritual</th>
+			<tr id="ltgRow">
+				<td style="text-align:right;">Long Term Goals (1+ Years)</td>
+				<td><textarea id="ltgPhysical"></textarea></td>
+				<td><textarea id="ltgMental"></textarea></td>
+				<td><textarea id="ltgEconomical"></textarea></td>
+				<td><textarea id="ltgSocial"></textarea></td>
+				<td><textarea id="ltgSpiritual"></textarea></td>
+			</tr>
+			<tr id="itgRow">
+				<td style="text-align:right;">Intermediate Term Goals (1-12 Months)</td>
+				<td><textarea id="itgPhysical"></textarea></td>
+				<td><textarea id="itgMental"></textarea></td>
+				<td><textarea id="itgEconomical"></textarea></td>
+				<td><textarea id="itgSocial"></textarea></td>
+				<td><textarea id="itgSpiritual"></textarea></td>
+			</tr>
+			<tr id="stgRow">
+				<td style="text-align:right;">Short Term Goals (&lt;30 Days)</td>
+				<td><textarea id="stgPhysical"></textarea></td>
+				<td><textarea id="stgMental"></textarea></td>
+				<td><textarea id="stgEconomical"></textarea></td>
+				<td><textarea id="stgSocial"></textarea></td>
+				<td><textarea id="stgSpiritual"></textarea></td>
+			</tr>
+		</table>	
+		<table style="margin:0px auto; width:95%;">
+			<tr>	
+				<th></th>
+				<th>Physical</th>
+				<th>Mental</th>
+				<th>Economical</th>
+				<th>Social</th>
+				<th>Spiritual</th>
+			</tr>
+			<tr id="planRow">
+				<td style="text-align:right;">Plans to Achieve Goals</td>
+				<td><textarea id="planPhysical"></textarea></td>
+				<td><textarea id="planMental"></textarea></td>
+				<td><textarea id="planEconomical"></textarea></td>
+				<td><textarea id="planSocial"></textarea></td>
+				<td><textarea id="planSpiritual"></textarea></td>
+			</tr>
+		</table>
+		<br>
+		<div style="text-align:center;">
+			<button id="save">Save</button>
+			<div id="status"></div>
+		</div>
+	</div>
+	
+</div>
+
+<script src="goalsAndPlans.js"></script>
+</body>
+</html>
