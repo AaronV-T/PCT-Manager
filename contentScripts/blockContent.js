@@ -4,6 +4,8 @@ var titleAndMeta = "";
 var badPageHasRun = false;
 var potentiallyBadPageHasRun = false;
 var redirectURL = "";
+var blacklist = new Array();
+var whitelist = new Array();
 
 chrome.storage.sync.get({ 
 	//Get options from storage.
@@ -21,9 +23,25 @@ chrome.storage.sync.get({
 		return;
 	}
 	
+	chrome.storage.local.get({
+		siteBlacklist: new Array(),
+		siteWhitelist: new Array()
+	}, function(items2) {
+		blacklist = items2.siteBlacklist;
+		whitelist = items2.siteWhitelist;
+		blockContentMain(items);
+	});
+});
+	
+function blockContentMain(items) {
 	redirectURL = items.redirectPage;
 	
 	currentHost = getPrimaryDomain(currentHost);
+	if (binarySearch(whitelist, currentHost, 0, whitelist.length - 1) > -1) //If this website is whitelisted, return.
+		return;
+	else if (binarySearch(blacklist, currentHost, 0, blacklist.length - 1) > -1) //If this website is blacklisted, redirect.
+		isBadPage();
+		
 	if (items.blockNSFWContent) {
 		if(currentHost.substring(currentHost.length - 4, currentHost.length) === ".xxx")  //If this is a .xxx domain: call isBadPage().
 			isBadPage();
@@ -95,7 +113,7 @@ chrome.storage.sync.get({
 		}
 	}
 
-});
+}
 /*
 
 
@@ -143,6 +161,8 @@ function isPotentiallyBadPage() {
 	} );
 	mutationObserver.observe(document, { subtree: true, childList: true });
 	
+	addNotification("Potentially Bad Page:", "Image and video elements have been removed.");
+	
 	percentageMatureWords();
 }
 
@@ -152,6 +172,16 @@ function isPotentiallyBadPage() {
 
 
 */
+function blacklistThisSite() {
+	blacklist.push(currentHost);
+	blacklist.sort();
+	
+	chrome.storage.local.set({
+		siteBlacklist: blacklist
+	}, function() {
+		window.location.href = redirectURL;
+	});
+}
 
 //binarySearch: Searches an sorted array for a key. If found: returns index. If not found: returns -1.
 function binarySearch(givenArray, key, minIndex, maxIndex) {

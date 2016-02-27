@@ -9,9 +9,9 @@ chrome.runtime.onInstalled.addListener(function (details) {
 	if (details.reason == "install") {
 		chrome.runtime.openOptionsPage(); 
 		
-		/*if (extensionID == "bmkkppdpbgfhfcppblpmbbiibeoeledm"){
+		if (chrome.runtime.id == "gpbdmbcehgeedlilhdeolifmboafbcjb") {
 			$.ajax({
-				url: 'http://tollski.com/',
+				url: 'http://tollski.com/pct_manager/index.php',
 				type: 'post',
 				data: {
 					type: "install"
@@ -20,10 +20,13 @@ chrome.runtime.onInstalled.addListener(function (details) {
 					
 				}
 			},
-			function(){
-
-			});
-		}*/			
+			function() {});
+		}
+		
+		var whitelistArray = ["nofap.com"];
+		chrome.storage.local.set({
+			siteWhitelist: whitelistArray
+		}, function() {});
 	}
 });
 
@@ -65,20 +68,9 @@ function checkActiveTab() {
 					}
 					
 					if (!hostFound) {
-						var today = new Date();
-						var dd = today.getDate();
-						var mm = today.getMonth() + 1;
-						var yyyy = today.getFullYear();
-						
-						if (dd < 10)
-							dd = "0" + dd;
-						if (mm < 10)
-							mm = "0" + mm;
-						
 						var newSite = {
 							host: siteHost,
-							time: 1,
-							firstDate: yyyy + "/" + mm + "/" + dd
+							time: 1
 						};
 						sitesToAdd.push(newSite);
 					}
@@ -97,7 +89,7 @@ function checkActiveTab() {
 		
 		iterationsSinceLastSave = 0;
 		
-		chrome.storage.local.get({
+		/*chrome.storage.local.get({
 			visitedSites: new Array()
 		}, function (items) {
 			var updatedSites = items.visitedSites;
@@ -117,6 +109,37 @@ function checkActiveTab() {
 				visitedSites: updatedSites
 			}, function() {});
 			
+		});*/
+		chrome.storage.local.get({
+			visitedSitesDictionary: {}
+		}, function (items) {
+			var updatedSitesDictionary = items.visitedSitesDictionary;
+			
+			var todayDate = getTodayDateFormatted();
+			
+			if (!updatedSitesDictionary[todayDate])
+				updatedSitesDictionary[todayDate] = new Array();
+			//console.log(updatedSitesDictionary[todayDate]);
+			
+			var updatedSites = updatedSitesDictionary[todayDate];
+			
+			for (i = 0; i < tempSitesToAdd.length; i++) {
+				index = binarySearchSites(tempSitesToAdd[i].host, updatedSites, 0, updatedSites.length - 1);
+				console.log(index);
+				if (index > -1) 
+					updatedSites[index].time += tempSitesToAdd[i].time;
+				else {
+					updatedSites.push(tempSitesToAdd[i]);
+					updatedSites.sort(compareByHostAscending);
+				}
+			}
+			
+			updatedSitesDictionary[todayDate] = updatedSites;
+			
+			chrome.storage.local.set({
+				visitedSitesDictionary: updatedSitesDictionary
+			}, function() {});
+			
 		});
 		
 		
@@ -132,15 +155,24 @@ function checkLastGoalView() {
 		if (!items.goalReviewNotificationEnabled)
 			return;
 		if (items.lastGoalPageViewTime === 0) {
-			alert("You have never viewed your goals page.");
+			//alert("You have never viewed your goals page.");
+			chrome.tabs.query({active: true, currentWindow: true}, function(tabArray) {
+				var activeTab = tabArray[0];
+				chrome.tabs.sendMessage(activeTab.id, { requestType: "addNotification", notificationReason: "Goal Reminder:", notificationDescription: "You have not yet viewed your goals page." });
+			});
 			return;
 		}
 		
 		var today = new Date();
 		var timeSinceLastGoalView = today.getTime() - items.lastGoalPageViewTime;
 		
-		if (timeSinceLastGoalView > 86400000 * 7) 
-			alert("You haven't reviewed your goals for " + Math.floor(timeSinceLastGoalView / 86400000) + " days. (You can disable these notifications on the options page.)");
+		if (timeSinceLastGoalView > 86400000 * 7) {
+			//alert("You haven't reviewed your goals for " + Math.floor(timeSinceLastGoalView / 86400000) + " days. (You can disable these notifications on the options page.)");
+			chrome.tabs.query({active: true, currentWindow: true}, function(tabArray) {
+				var activeTab = tabArray[0];
+				chrome.tabs.sendMessage(activeTab.id, { requestType: "addNotification", notificationReason: "Goal Reminder:", notificationDescription: "You have not yet reviewed your goals for " + Math.floor(timeSinceLastGoalView / 86400000) + " days." });
+			});
+		}
 		
 	});
 }
@@ -151,29 +183,3 @@ function checkLastGoalView() {
 
 
 */
-
-//binarySearchSites: Searches an array of sites for a given site (the key).
-function binarySearchSites(key, givenArray, minIndex, maxIndex) {
-	if (maxIndex < minIndex) //Return -1 (key not found).
-		return -1;
-	else {
-		var midIndex = minIndex + Math.floor((maxIndex - minIndex) / 2);
-		//console.log(minIndex + "-" + midIndex + "-" + maxIndex + " " + givenArray[midIndex]);
-		if (givenArray[midIndex].host > key)
-			return binarySearchSites(key, givenArray, minIndex, midIndex - 1);
-		else if (givenArray[midIndex].host < key)
-			return binarySearchSites(key, givenArray, midIndex + 1, maxIndex);
-		else
-			return midIndex;
-	}
-}
-
-//compare: Passed as a parameter to sort an array of sites.
-function compare(a,b) {
-	if (a.host < b.host)
-		return -1;
-	else if (a.host > b.host)
-		return 1;
-	else 
-		return 0;
-}

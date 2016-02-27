@@ -3,19 +3,30 @@
 <head>
 <title>Time Tracker | PCT Manager</title>
 <style>
+	span { color:blue; cursor:pointer; }
 	td { padding-left:20px; }
 	th { padding-left:20px; text-align:center; cursor:pointer;}
 </style>
 </head>
 <body>
-<h2 style="text-align:center">PCT Manager<span id="versionSpan"></span></h2>
+<h2 style="text-align:center">PCT Manager - Time Tracker<span id="versionSpan"></span></h2>
 <div id="loadingDiv">Loading time tracker, please wait.</div>
 <div id="mainDiv" style="display:none;overflow:hidden;">
-	<h3 style="text-align:center;">Time Tracker</h3>
-	<table id="timeTrackerTable" style="margin:0px auto;">
-	</table>
+	<h3 id="viewingHeader" style="text-align:center;">Viewing: </h3>
+	<p style="text-align:center;">View by: <span id="viewByTotal">Total</span> - <span id="viewByToday">Today</span> - <span id="viewByThisWeek">Last 7 Days</span></p>
+	<div style="width:20%; height:100px; float:left; text-align:right;">
+		<span id="viewPrevious"></span>
+	</div>
+	<div style="width:60%; float:left;">
+		<table id="timeTrackerTable" style="margin:0px auto;">
+		</table>
+	</div>
+	<div style="width:20%; height:100px; float:left; text-align:left;">
+		<span id="viewNext"></span>
+	</div>
 </div>
 
+<script src="../helperFunctions.js"></script>
 <script src="timeTracker.js"></script>
 </body>
 </html>

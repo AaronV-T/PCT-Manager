@@ -23,17 +23,23 @@
 			<input type="checkbox" id="enableTimeTrackingCheckbox">
 			Enable tracking of time you spend on websites.
 		</label></td></tr>
-		<tr><td><label>
-			<input type="checkbox" id="enableTimeTrackingIncognitoCheckbox" style="margin-left:20px;">
-			Enable tracking of time you spend on websites in incognito mode. (You must select "Allow in incognito" under the PCT Manager in <span id="openExtensionsPage">Chrome's extension page</span> for this to work).
-		</label></td></tr>
+		<tr><td>
+			<label>
+				<input type="checkbox" id="enableTimeTrackingIncognitoCheckbox" style="margin-left:20px;" />
+				Enable tracking of time you spend on websites in incognito mode.
+			</label>
+			(You must select "Allow in incognito" under the PCT Manager in <span id="openExtensionsPage">Chrome's extension page</span> for this to work).
+		</td></tr>
 		<tr><td>
 			<br>
 		</td></tr>
-		<tr><td><label>
-			<input type="checkbox" id="blockNSFWContentCheckbox">
-			Block pornographic websites and content.
-		</label></td></tr>
+		<tr><td>
+			<label>
+				<input type="checkbox" id="blockNSFWContentCheckbox">
+				Block pornographic websites and content. 
+			</label>
+			(Tip: To work in incognito mode you must select "Allow in incognito" under the PCT Manager in <span id="openExtensionsPage2">Chrome's extension page.</span>)
+		</td></tr>
 		<tr><td><label>
 			<input type="checkbox" id="blockNSFWSubredditsCheckbox">
 			Block pornographic subreddits on reddit and imgur.
@@ -49,10 +55,25 @@
 		
 		<tr><td style="text-align:center;">
 			<br>
-			<button id="save">Save</button>
+			<button id="saveOptions">Save Options</button>
 			<div id="status"></div>
 		</td></tr>
 	</table>
+	<br><br>
+	<div style="text-align:center;">
+		<div style="width:50%; float:left;">
+			<h3>Blacklisted Sites</h3>
+			<textarea id="blacklistTextarea" style="resize:none; width:50%; height:300px;"></textarea>
+			<br>
+			<button id="saveBlacklist">Save Blacklist</button>
+		</div>
+		<div style="width:50%; float:left;">
+			<h3>Whitelisted Sites</h3>
+			<textarea id="whitelistTextarea" style="resize:none; width:50%; height:300px;"></textarea>
+			<br>
+			<button id="saveWhitelist">Save Whitelist</button>
+		</div>
+	</div>
 </div>
 
 <script src="options.js"></script>

@@ -1,9 +1,16 @@
+var blacklist = new Array();
+var whitelist = new Array();
+
 document.addEventListener('DOMContentLoaded', restore_options);
-document.getElementById('save').addEventListener('click', save_options);
+
 document.getElementById('blockNSFWContentCheckbox').addEventListener('click', blockNSFWContentCheckboxClick);
 document.getElementById('blockNSFWSubredditsCheckbox').addEventListener('click', blockNSFWSubredditsCheckboxClick);
 document.getElementById('enableTimeTrackingCheckbox').addEventListener('click', enableTimeTrackingCheckboxClick);
 document.getElementById('openExtensionsPage').addEventListener('click', openExtensionsPage);
+document.getElementById('openExtensionsPage2').addEventListener('click', openExtensionsPage);
+document.getElementById('saveOptions').addEventListener('click', save_options);
+document.getElementById('saveBlacklist').addEventListener('click', saveBlacklist);
+document.getElementById('saveWhitelist').addEventListener('click', saveWhitelist);
 
 // Loads options from chrome.storage
 function restore_options() {
@@ -25,8 +32,19 @@ function restore_options() {
 		document.getElementById('goalReviewNotificationEnabledCheckbox').checked = items.goalReviewNotificationEnabled;
 		document.getElementById('redirectPageText').value = items.redirectPage;
 		
-		document.getElementById('mainDiv').style.display = "inline";
-		document.getElementById('loadingDiv').style.display = "none";
+		chrome.storage.local.get({
+			siteBlacklist: new Array(),
+			siteWhitelist: new Array()
+		}, function(items2) {
+			blacklist = items2.siteBlacklist;
+			whitelist = items2.siteWhitelist;
+			
+			populateBlacklist();
+			populateWhitelist();
+			
+			document.getElementById('mainDiv').style.display = "inline";
+			document.getElementById('loadingDiv').style.display = "none";
+		});	
 	});
 }
 
@@ -88,4 +106,52 @@ function enableTimeTrackingCheckboxClick() {
 
 function openExtensionsPage() {
 	chrome.tabs.create({ 'url': "chrome://extensions" });
+}
+
+function parseArrayFromTextarea(textAreaID) {
+	var tempList = document.getElementById(textAreaID).value.split('\n'); //Create an array of strings from the text area.
+	for (i = tempList.length - 1; i >= 0; i--) { //Remove any unneccessary whitespace from strings in the array.
+		tempList[i] = tempList[i].trim();
+		if (tempList[i].length === 0)
+			tempList.splice(i, 1);
+	}
+	tempList.sort();
+	
+	return tempList;
+}
+
+function populateBlacklist() {
+	var blacklistText = "";
+	for (i = 0; i < blacklist.length; i++) 
+		blacklistText += blacklist[i] + '\n';
+	document.getElementById("blacklistTextarea").value = blacklistText;
+}
+
+function populateWhitelist() {
+	var whitelistText = "";
+	for (i = 0; i < whitelist.length; i++)
+		whitelistText += whitelist[i] + '\n';
+	document.getElementById("whitelistTextarea").value = whitelistText;
+}
+
+function saveBlacklist() {
+	blacklist = parseArrayFromTextarea("blacklistTextarea");
+	
+	//Save the list and repopulate it.
+	chrome.storage.local.set({
+		siteBlacklist: blacklist
+	}, function(items2) {
+		populateBlacklist();
+	});	
+}
+
+function saveWhitelist() {	
+	whitelist = parseArrayFromTextarea("whitelistTextarea");
+	
+	//Save the list and repopulate it.
+	chrome.storage.local.set({
+		siteWhitelist: whitelist
+	}, function(items2) {
+		populateWhitelist();
+	});	
 }
