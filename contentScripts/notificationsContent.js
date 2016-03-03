@@ -30,7 +30,7 @@ function addNotification(reasonGiven, descriptionGiven) {
 	
 	var topPos = 0;
 	
-	notificationDiv.setAttribute("style", "z-index:9999; position:fixed; margin:0 auto; width:"+msgWidth+"px; left:0; top:" + topPos + "; border:2px solid;border-color: #2086E0;background-color: #272727; color:white; border-radius: .3em;padding: 0.6em;text-align:center;");
+	notificationDiv.setAttribute("style", "z-index:99999999; position:fixed; margin:0 auto; width:"+msgWidth+"px; left:0; top:" + topPos + "; border:2px solid;border-color: #2086E0;background-color: #272727; color:white; border-radius: .3em;padding: 0.6em;text-align:center;");
 	
 	var headText = document.createElement("span");
 	headText.setAttribute("style", "position:absolute; top:0.2em; left:50%;");
@@ -93,11 +93,13 @@ function addNotification(reasonGiven, descriptionGiven) {
 		notificationDiv.appendChild(buttonsDiv);
 	}
 	else if (reasonGiven === "Goal Reminder:") {
-		var buttonA = document.createElement("a");
-		buttonA.textContent = "View Goals Page";
-		buttonA.setAttribute("href", "chrome-extension://" + chrome.runtime.id + "/pages/goalsAndPlans.html");
-		
-		notificationDiv.appendChild(buttonA);
+		var planButton = document.createElement("span");
+		planButton.innerHTML = "View Goals Page";
+		planButton.setAttribute("style", "cursor:pointer; color:#4E76C9;");
+		planButton.addEventListener("click", function() { 
+			chrome.runtime.sendMessage( { messageType: "createNewTab", url: "chrome-extension://" + chrome.runtime.id + "/pages/goalsAndPlans.html" } ); //Send message to open goal and plans page.
+		});
+		notificationDiv.appendChild(planButton);
 	}
 	
 	document.getElementsByTagName("body")[0].appendChild(notificationDiv);

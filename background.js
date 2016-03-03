@@ -3,7 +3,13 @@ var sitesToAdd = new Array();
 var trackingEnabled;
 
 setInterval(checkActiveTab, 1000);
-setInterval(checkLastGoalView, 3600000);
+setInterval(checkLastGoalView, 1800000);
+
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
+	if (msg.messageType && msg.messageType == "createNewTab" && msg.url) {
+		chrome.tabs.create({ 'url': msg.url }); 
+	}
+});
 
 chrome.runtime.onInstalled.addListener(function (details) {
 	if (details.reason == "install") {
@@ -48,7 +54,7 @@ function checkActiveTab() {
 			chrome.tabs.sendMessage(activeTab.id, { requestType: "getLastActiveTime" }, function(response)  { //Send a message to the tab requesting its last active time.
 				if (chrome.runtime.lastError)
 					console.log("Error: " + chrome.runtime.lastError.message)
-				else if (response.lastActiveTime && response.lastActiveTime <= 60) {
+				else if (response.lastActiveTime && response.lastActiveTime <= 30) {
 					var loc = document.createElement("a");
 					loc.href = activeTab.url;
 					var siteHost = loc.hostname;
