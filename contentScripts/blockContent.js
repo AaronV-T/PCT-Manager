@@ -10,6 +10,7 @@ var whitelist = new Array();
 chrome.storage.sync.get({ 
 	//Get options from storage.
 	blockNSFWContent: true,
+	blockNSFWRedditPosts: true,
 	blockNSFWSubreddits: true,
 	forceGoogleImagesSafeSearch: true,
 	redirectPage: "http://emergency.nofap.com",
@@ -83,6 +84,37 @@ function blockContentMain(items) {
 			document.getElementsByClassName("ab_dropdownlnk ab_dropdownchecklist")[0].click();
 		}
 	}
+	if (items.blockNSFWRedditPosts && currentURL.indexOf("reddit.com") > -1) {
+			/*var nsfwPreferenceEnabled = false;
+			
+			var things = document.getElementsByClassName("thing");
+			for (i = 0; i < things.length; i++) {
+				console.log(things[i].getElementsByClassName("rank")[0]);
+			}
+				var nsfwStamps = things[i].getElementsByClassName("nsfw-stamp");
+				if (nsfwStamps.length > 0) {
+					console.log("Deleting NSFW item.");
+					things[i].parentNode.removeChild(things[i]);
+					
+					if (!nsfwPreferenceEnabled)
+						nsfwPreferenceEnabled = true;
+				}
+			}
+			
+			if (nsfwPreferenceEnabled) { //If we found that the reddit account's nsfw preference is enabled, let's disable it.
+				
+			}*/
+			
+			var over18Elements = document.getElementsByClassName("over18");
+			for (i = over18Elements.length - 1; i >= 0; i--) {
+				console.log("Deleting NSFW item.");
+				over18Elements[i].parentNode.removeChild(over18Elements[i]);
+			}
+			
+			if (over18Elements.length > 0) { //If we found that the reddit account's nsfw preference is enabled, let's disable it.
+				
+			}
+		}
 
 	if (items.blockNSFWContent) {
 		titleAndMeta = getTitleAndMeta();

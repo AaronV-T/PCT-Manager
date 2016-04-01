@@ -4,6 +4,7 @@ var whitelist = new Array();
 document.addEventListener('DOMContentLoaded', restore_options);
 
 document.getElementById('blockNSFWContentCheckbox').addEventListener('click', blockNSFWContentCheckboxClick);
+document.getElementById('blockNSFWRedditPostsCheckbox').addEventListener('click', blockNSFWRedditPostsCheckboxCheckboxClick);
 document.getElementById('blockNSFWSubredditsCheckbox').addEventListener('click', blockNSFWSubredditsCheckboxClick);
 document.getElementById('enableTimeTrackingCheckbox').addEventListener('click', enableTimeTrackingCheckboxClick);
 document.getElementById('openExtensionsPage').addEventListener('click', openExtensionsPage);
@@ -17,6 +18,7 @@ function restore_options() {
 	chrome.storage.sync.get({
 		// Set defaults.
 		blockNSFWContent: true,
+		blockNSFWRedditPosts: true,
 		blockNSFWSubreddits: true,
 		enableTimeTracking: true,
 		enableTimeTrackingIncognito: true,
@@ -25,6 +27,7 @@ function restore_options() {
 		redirectPage: "http://emergency.nofap.com"
 	}, function(items) {
 		document.getElementById('blockNSFWContentCheckbox').checked = items.blockNSFWContent;
+		document.getElementById('blockNSFWRedditPostsCheckbox').checked = items.blockNSFWRedditPosts;
 		document.getElementById('blockNSFWSubredditsCheckbox').checked = items.blockNSFWSubreddits;
 		document.getElementById('enableTimeTrackingCheckbox').checked = items.enableTimeTracking;
 		document.getElementById('enableTimeTrackingIncognitoCheckbox').checked = items.enableTimeTrackingIncognito;
@@ -51,7 +54,8 @@ function restore_options() {
 
 // Saves options to chrome.storage
 function save_options() {
-	var blockContent = document.getElementById('blockNSFWContentCheckbox').checked;	
+	var blockContent = document.getElementById('blockNSFWContentCheckbox').checked;
+	var blockRedditPosts = document.getElementById('blockNSFWRedditPostsCheckbox').checked;
 	var blockSubreddits = document.getElementById('blockNSFWSubredditsCheckbox').checked;
 	var timeTrackingEnabled = document.getElementById('enableTimeTrackingCheckbox').checked;
 	var timeTrackingIncognitoEnabled = document.getElementById('enableTimeTrackingIncognitoCheckbox').checked;
@@ -65,6 +69,7 @@ function save_options() {
 	
 	chrome.storage.sync.set({
 		blockNSFWContent: blockContent,
+		blockNSFWRedditPosts: blockRedditPosts,
 		blockNSFWSubreddits: blockSubreddits,
 		enableTimeTracking: timeTrackingEnabled,
 		enableTimeTrackingIncognito: timeTrackingIncognitoEnabled,
@@ -96,6 +101,14 @@ function blockNSFWSubredditsCheckboxClick() {
 		var confirmUncheck = confirm("Do you really wish to unblock NSFW subreddits?");
 		if (!confirmUncheck)
 			document.getElementById('blockNSFWSubredditsCheckbox').checked = true;
+	}
+}
+
+function blockNSFWRedditPostsCheckboxCheckboxClick() {
+	if (!document.getElementById('blockNSFWRedditPostsCheckbox').checked) {
+		var confirmUncheck = confirm("Do you really wish to allow NSFW posts in reddit?");
+		if (!confirmUncheck)
+			document.getElementById('blockNSFWRedditPostsCheckbox').checked = true;
 	}
 }
 
