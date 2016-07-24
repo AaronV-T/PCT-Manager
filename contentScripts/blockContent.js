@@ -110,10 +110,11 @@ function blockContentMain(items) {
 				console.log("Deleting NSFW item.");
 				over18Elements[i].parentNode.removeChild(over18Elements[i]);
 			}
-			
+			/*
 			if (over18Elements.length > 0) { //If we found that the reddit account's nsfw preference is enabled, let's disable it.
 				
 			}
+			*/
 		}
 
 	if (items.blockNSFWContent) {
