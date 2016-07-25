@@ -3,7 +3,7 @@
 
 	"name": "PCT Manager",
 	"description": "Personal, content, and time manager. Provides tools for goal setting & planning, time management, and content filtering.",
-	"version": "0.3.0",
+	"version": "0.3.1",
 
 	"background": { 
 		"scripts": ["jquery-2.1.4.min.js", "helperFunctions.js", "background.js"]

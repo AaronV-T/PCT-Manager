@@ -5,21 +5,26 @@
 <head>
 <style>
 	p { text-align:center; }
-	span { cursor:pointer; color:blue; }
+	.clickable { cursor:pointer; color:blue; }
 </style>
 </head>
 <body style="width:600px;">
 	<div id="optionsDiv" style="text-align:center;">
-		<p><strong>PCT Manager</strong></p>
-		<p>You can edit settings on the <span id="openOptions">options page.</span></p>
+		<p><strong>PCT Manager</strong> <span id="versionSpan"></span></p>
+		<p>You can edit settings and site whitelist/blacklist on the <span id="openOptions" class="clickable">options page.</span></p>
 		<div>
-			<div style="width:50%;float:left;"><span id="openPlanner">Goals & Plans</span></div>
-			<div style="width:50%;float:left;"><span id="openTimeTracker">Time Tracker</span></p></div>
+			<div style="width:50%;float:left;"><span id="openPlanner" class="clickable">Goals & Plans</span></div>
+			<div style="width:50%;float:left;"><span id="openTimeTracker" class="clickable">Time Tracker</span></p></div>
 		</div>
 		<div>
-			<div style="width:33%; float:left;"><span id="openPanicSite">Panic Button!</span></div>
-			<div style="width:33%; float:left;"><span id="addToBlacklist">Blacklist This Site</span></div>
-			<div style="width:33%; float:left;"><span id="reloadPageAndOverride">Unblock This Page</span></div>
+			<div style="width:33%; float:left;"><span id="openPanicSite" class="clickable">Panic Button!</span></div>
+			<div style="width:33%; float:left;"><span id="addToBlacklist" class="clickable">Blacklist This Site</span></div>
+			<div style="width:33%; float:left;"><span id="reloadPageAndOverride" class="clickable">Unblock This Page</span></div>
+		</div>
+		<div style="clear:both;"></div>
+		<br>
+		<div>
+			<div>You can submit feedback, bug reports, and suggest adult sites/subreddits to be filtered <span id="openFeedback" class="clickable">by clicking here.</span></div>
 		</div>
 	</div>
 	<script src='../helperFunctions.js'></script>

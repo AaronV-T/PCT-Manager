@@ -105,11 +105,20 @@ function blockContentMain(items) {
 				
 			}*/
 			
+			//Remove NSFW posts.
 			var over18Elements = document.getElementsByClassName("over18");
 			for (i = over18Elements.length - 1; i >= 0; i--) {
 				console.log("Deleting NSFW item.");
 				over18Elements[i].parentNode.removeChild(over18Elements[i]);
 			}
+			
+			//Remove comments on NSFW posts in users' overviews/comments.
+			var nsfwStampElements = document.getElementsByClassName("nsfw-stamp stamp");
+			for (i = nsfwStampElements.length - 1; i >= 0; i--) {
+				console.log("Deleting NSFW item.");
+				nsfwStampElements[i].parentNode.parentNode.parentNode.parentNode.parentNode.removeChild(nsfwStampElements[i].parentNode.parentNode.parentNode.parentNode);
+			}
+			
 			/*
 			if (over18Elements.length > 0) { //If we found that the reddit account's nsfw preference is enabled, let's disable it.
 				
