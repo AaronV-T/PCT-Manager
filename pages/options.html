@@ -30,6 +30,114 @@
 			</label>
 			(Tip: To work in incognito mode you must check "Allow in incognito" under the PCT Manager in <span id="openExtensionsPage">Chrome's extension page.</span>)
 		</td></tr>
+		<tr><td><label>
+			<input type="checkbox" id="enableLateAlertCheckbox">
+			Enable "Late Alerts". If enabled, you will be frequently notified when you are using the internet during your specified late time.
+		</label></td></tr>
+		<tr><td><label style="margin-left:20px;">
+			Late Alert Start Time:
+			<select id="lateAlertStart">
+				<option value="0000">12:00AM</option>
+				<option value="0030">12:30AM</option>
+				<option value="0100">1:00AM</option>
+				<option value="0130">1:30AM</option>
+				<option value="0200">2:00AM</option>
+				<option value="0230">2:30AM</option>
+				<option value="0300">3:00AM</option>
+				<option value="0330">3:30AM</option>
+				<option value="0400">4:00AM</option>
+				<option value="0430">4:30AM</option>
+				<option value="0500">5:00AM</option>
+				<option value="0530">5:30AM</option>
+				<option value="0600">6:00AM</option>
+				<option value="0630">6:30AM</option>
+				<option value="0700">7:00AM</option>
+				<option value="0730">7:30AM</option>
+				<option value="0800">8:00AM</option>
+				<option value="0830">8:30AM</option>
+				<option value="0900">9:00AM</option>
+				<option value="0930">9:30AM</option>
+				<option value="1000">10:00AM</option>
+				<option value="1030">10:30AM</option>
+				<option value="1100">11:00AM</option>
+				<option value="1130">11:30AM</option>
+				<option value="1200">12:00P<</option>
+				<option value="1230">12:30PM</option>
+				<option value="1300">1:00PM</option>
+				<option value="1330">1:30PM</option>
+				<option value="1400">2:00PM</option>
+				<option value="1430">2:30PM</option>
+				<option value="1500">3:00PM</option>
+				<option value="1530">3:30PM</option>
+				<option value="1600">4:00PM</option>
+				<option value="1630">4:30PM</option>
+				<option value="1700">5:00PM</option>
+				<option value="1730">5:30PM</option>
+				<option value="1800">6:00PM</option>
+				<option value="1830">6:30PM</option>
+				<option value="1900">7:00PM</option>
+				<option value="1930">7:30PM</option>
+				<option value="2000">8:00PM</option>
+				<option value="2030">8:30PM</option>
+				<option value="2100">9:00PM</option>
+				<option value="2130">9:30PM</option>
+				<option value="2200">10:00PM</option>
+				<option value="2230">10:30PM</option>
+				<option value="2300">11:00PM</option>
+				<option value="2330">11:30PM</option>
+			</select>
+			Late Alert End Time:
+			<select id="lateAlertEnd">
+				<option value="0000">12:00AM</option>
+				<option value="0030">12:30AM</option>
+				<option value="0100">1:00AM</option>
+				<option value="0130">1:30AM</option>
+				<option value="0200">2:00AM</option>
+				<option value="0230">2:30AM</option>
+				<option value="0300">3:00AM</option>
+				<option value="0330">3:30AM</option>
+				<option value="0400">4:00AM</option>
+				<option value="0430">4:30AM</option>
+				<option value="0500">5:00AM</option>
+				<option value="0530">5:30AM</option>
+				<option value="0600">6:00AM</option>
+				<option value="0630">6:30AM</option>
+				<option value="0700">7:00AM</option>
+				<option value="0730">7:30AM</option>
+				<option value="0800">8:00AM</option>
+				<option value="0830">8:30AM</option>
+				<option value="0900">9:00AM</option>
+				<option value="0930">9:30AM</option>
+				<option value="1000">10:00AM</option>
+				<option value="1030">10:30AM</option>
+				<option value="1100">11:00AM</option>
+				<option value="1130">11:30AM</option>
+				<option value="1200">12:00P<</option>
+				<option value="1230">12:30PM</option>
+				<option value="1300">1:00PM</option>
+				<option value="1330">1:30PM</option>
+				<option value="1400">2:00PM</option>
+				<option value="1430">2:30PM</option>
+				<option value="1500">3:00PM</option>
+				<option value="1530">3:30PM</option>
+				<option value="1600">4:00PM</option>
+				<option value="1630">4:30PM</option>
+				<option value="1700">5:00PM</option>
+				<option value="1730">5:30PM</option>
+				<option value="1800">6:00PM</option>
+				<option value="1830">6:30PM</option>
+				<option value="1900">7:00PM</option>
+				<option value="1930">7:30PM</option>
+				<option value="2000">8:00PM</option>
+				<option value="2030">8:30PM</option>
+				<option value="2100">9:00PM</option>
+				<option value="2130">9:30PM</option>
+				<option value="2200">10:00PM</option>
+				<option value="2230">10:30PM</option>
+				<option value="2300">11:00PM</option>
+				<option value="2330">11:30PM</option>
+			</select>
+		</label></td></tr>
 		<tr><td>
 			<br>
 		</td></tr>
@@ -65,17 +173,39 @@
 	</table>
 	<br><br>
 	<div style="text-align:center;">
-		<div style="width:50%; float:left;">
+		<div style="width:33%; float:left;">
 			<h3>Blacklisted Sites</h3>
-			<textarea id="blacklistTextarea" style="resize:none; width:50%; height:300px;"></textarea>
+			<p>Only include site domain name. (E.g.: reddit.com, youtube.com). One site per line.</p>
+			<textarea id="blacklistTextarea" style="resize:none; width:75%; height:300px;"></textarea>
 			<br>
 			<button id="saveBlacklist">Save Blacklist</button>
 		</div>
-		<div style="width:50%; float:left;">
+		<div style="width:33%; float:left;">
 			<h3>Whitelisted Sites</h3>
-			<textarea id="whitelistTextarea" style="resize:none; width:50%; height:300px;"></textarea>
+			<p>Only include site domain name. (E.g.: reddit.com, youtube.com). One site per line.</p>
+			<textarea id="whitelistTextarea" style="resize:none; width:75%; height:300px;"></textarea>
 			<br>
 			<button id="saveWhitelist">Save Whitelist</button>
+		</div>
+		<div style="width:33%; float:left;">
+			<h3>Time-Limited Sites</h3>
+			<p>Only include site domain name. (E.g.: reddit.com, youtube.com). One site per line.</p>
+			<textarea id="timeLimitedTextarea" style="resize:none; width:75%; height:300px;"></textarea>
+			<br>
+			<label>
+				<input type="text" id="timeLimitedTimeText" maxlength="4" size="4">
+				Time (in minutes) to allow on limited sites.
+			</label>
+			<br>
+			<label>
+				<select id="timeLimitTypeDropdown">
+					<option value="Alert">Alert</option>
+					<option value="Block">Block</option>
+				</select>
+				Behavior when time limit reached.
+			</label>
+			<br>
+			<button id="saveTimeLimitedInfo">Save Time-Limited Info</button>
 		</div>
 	</div>
 </div>
