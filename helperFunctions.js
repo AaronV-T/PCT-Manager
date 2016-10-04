@@ -1,10 +1,26 @@
+function binarySearch(key, givenArray, minIndex, maxIndex) {
+	if (maxIndex < minIndex) //Return -1 (key not found).
+		return -1;
+	else {
+		var midIndex = minIndex + Math.floor((maxIndex - minIndex) / 2);
+
+		if (givenArray[midIndex] > key)
+			return binarySearch(key, givenArray, minIndex, midIndex - 1);
+		else if (givenArray[midIndex] < key)
+			return binarySearch(key, givenArray, midIndex + 1, maxIndex);
+		else {
+			return midIndex;
+		}
+	}
+}
+
 //binarySearchSites: Searches an array of sites for a given site (the key).
 function binarySearchSites(key, givenArray, minIndex, maxIndex) {
 	if (maxIndex < minIndex) //Return -1 (key not found).
 		return -1;
 	else {
 		var midIndex = minIndex + Math.floor((maxIndex - minIndex) / 2);
-		//console.log(minIndex + "-" + midIndex + "-" + maxIndex + " " + givenArray[midIndex]);
+
 		if (givenArray[midIndex].host > key)
 			return binarySearchSites(key, givenArray, minIndex, midIndex - 1);
 		else if (givenArray[midIndex].host < key)

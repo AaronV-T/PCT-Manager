@@ -5,7 +5,7 @@ var userIsActive = false;
 setInterval(checkActiveTab, 1000); //1 second
 setInterval(checkLateTime, 840000); //14 minutes
 setInterval(checkLastGoalView, 1800000); //30 minutes
-setInterval(checkTimeLimitedSites, 54000+0); //9 minutes
+setInterval(checkTimeLimitedSites, 540000); //9 minutes
 
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 	if (msg.messageType && msg.messageType == "createNewTab" && msg.url) {
@@ -204,11 +204,12 @@ function checkTimeLimitedSites() {
 						var limitTime = items.siteTimeLimitedTime * 60;
 						var sitesDictionary = items.visitedSitesDictionary;
 						
-						var index = binarySearchSites(siteHost, limitedSites, 0, limitedSites.length - 1);
+						console.log("limited sites: " + limitedSites);
+						var index = binarySearch(siteHost, limitedSites, 0, limitedSites.length - 1);
 						if (index === -1) //If current site isn't a time-limited site: return.
 							return;
 						
-						console.log(siteHost + " is a time-limited site.");
+						console.log(siteHost + " is a time-limited site. index=" + index);
 						var todayDate = getTodayDateFormatted();
 						
 						if (!sitesDictionary[todayDate]) //If the array of sites we have visited today is empty: return.
