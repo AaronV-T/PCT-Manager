@@ -7,6 +7,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 		addNotification(msg.notificationReason, msg.notificationDescription);
 	else if (msg.requestType === "blacklistThisSite") 
 		blacklistThisSite();
-	else if (msg.requestType === "redirect")
-		window.location.href = "http://google.com"; 
+	else if (msg.requestType === "timeLimitedAlert" && msg.timeSpent) {
+		timeLimitAlert(msg.timeSpent);
+	}
 });

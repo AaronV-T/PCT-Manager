@@ -101,6 +101,13 @@ function addNotification(reasonGiven, descriptionGiven) {
 		});
 		notificationDiv.appendChild(planButton);
 	}
+	else if (reasonGiven === "Time Expired") {
+		var snoozeButton = document.createElement("span");
+		snoozeButton.innerHTML = "Snooze";
+		snoozeButton.setAttribute("style", "cursor:pointer; color:#4E76C9;");
+		snoozeButton.addEventListener("click", snoozeTimeLimitedSitesAlertsClick);
+		notificationDiv.appendChild(snoozeButton);
+	}
 	
 	document.getElementsByTagName("body")[0].appendChild(notificationDiv);
 	activeNotification = document.getElementById("pctNotification");

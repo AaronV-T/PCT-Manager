@@ -85,26 +85,6 @@ function blockContentMain(items) {
 		}
 	}
 	if (items.blockNSFWRedditPosts && currentURL.indexOf("reddit.com") > -1) {
-			/*var nsfwPreferenceEnabled = false;
-			
-			var things = document.getElementsByClassName("thing");
-			for (i = 0; i < things.length; i++) {
-				console.log(things[i].getElementsByClassName("rank")[0]);
-			}
-				var nsfwStamps = things[i].getElementsByClassName("nsfw-stamp");
-				if (nsfwStamps.length > 0) {
-					console.log("Deleting NSFW item.");
-					things[i].parentNode.removeChild(things[i]);
-					
-					if (!nsfwPreferenceEnabled)
-						nsfwPreferenceEnabled = true;
-				}
-			}
-			
-			if (nsfwPreferenceEnabled) { //If we found that the reddit account's nsfw preference is enabled, let's disable it.
-				
-			}*/
-			
 			//Remove NSFW posts.
 			var over18Elements = document.getElementsByClassName("over18");
 			for (i = over18Elements.length - 1; i >= 0; i--) {
@@ -112,18 +92,20 @@ function blockContentMain(items) {
 				over18Elements[i].parentNode.removeChild(over18Elements[i]);
 			}
 			
-			//Remove comments on NSFW posts in users' overviews/comments.
+			//Remove submissions and comments on NSFW posts in users' overviews/comments and also posts in search results.
 			var nsfwStampElements = document.getElementsByClassName("nsfw-stamp stamp");
 			for (i = nsfwStampElements.length - 1; i >= 0; i--) {
 				console.log("Deleting NSFW item.");
-				nsfwStampElements[i].parentNode.parentNode.parentNode.parentNode.parentNode.removeChild(nsfwStampElements[i].parentNode.parentNode.parentNode.parentNode);
-			}
-			
-			/*
-			if (over18Elements.length > 0) { //If we found that the reddit account's nsfw preference is enabled, let's disable it.
 				
+				var elemToDelete = nsfwStampElements[i].parentNode.parentNode.parentNode.parentNode;
+				if (elemToDelete.className.indexOf("thing") == -1 && elemToDelete.className.indexOf("search-result") == -1)
+					elemToDelete = nsfwStampElements[i].parentNode.parentNode.parentNode;
+				
+				if (elemToDelete.className.indexOf("thing") == -1 && elemToDelete.className.indexOf("search-result") == -1)
+					return;
+				
+				elemToDelete.parentNode.removeChild(elemToDelete);
 			}
-			*/
 		}
 
 	if (items.blockNSFWContent) {

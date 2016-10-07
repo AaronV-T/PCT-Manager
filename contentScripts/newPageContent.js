@@ -1,0 +1,1 @@
+chrome.runtime.sendMessage( { messageType: "pageLoaded" } ); //Send message to background script to notify it that a new page loaded.

@@ -2,15 +2,18 @@ var iterationsSinceLastSave = 0;
 var sitesToAdd = new Array();
 var userIsActive = false;
 
+var TIME_LIMITED_SITES_SNOOZE_DURATION = 600000;
+
 setInterval(checkActiveTab, 1000); //1 second
 setInterval(checkLateTime, 840000); //14 minutes
 setInterval(checkLastGoalView, 1800000); //30 minutes
 setInterval(checkTimeLimitedSites, 540000); //9 minutes
 
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
-	if (msg.messageType && msg.messageType == "createNewTab" && msg.url) {
+	if (msg.messageType && msg.messageType == "createNewTab" && msg.url) 
 		chrome.tabs.create({ 'url': msg.url }); 
-	}
+	else if (msg.messageType && msg.messageType == "pageLoaded")
+		checkTimeLimitedSites();
 });
 
 chrome.runtime.onInstalled.addListener(function (details) {
@@ -161,8 +164,11 @@ function checkLateTime() {
 			else
 				currTimeString += now.getHours();
 			
-			currTimeString += ":" + now.getMinutes();
-			
+			if (now.getMinutes() < 10)
+				currTimeString += ":0" + now.getMinutes();
+			else
+				currTimeString += ":" + now.getMinutes();
+		
 			if (now.getHours() < 12)
 				currTimeString += "AM";
 			else
@@ -178,75 +184,88 @@ function checkLateTime() {
 
 //checkTimeLimitedSites: Checks if the active page is a time-limited website. If it is and the user has surpassed his time limit it notifies the user.
 function checkTimeLimitedSites() {
+	console.log("Checking time limited sites.");
+	
 	if (!userIsActive)
 		return;
 	
-	//Get the active browser tab. It must be completely loaded.
-	chrome.tabs.query({active: true, currentWindow: true, status: "complete"}, function(tabArray) {
-		// since only one tab should be active and in the current window at once
-		// the return variable should only have one entry
-		var activeTab = tabArray[0];
-		
-		if (activeTab) { //If we got a tab that is active in the current window and completely loaded: ...
-			chrome.tabs.sendMessage(activeTab.id, { requestType: "getLastActiveTime" }, function(response)  { //Send a message to the tab requesting its last active time.
-				if (chrome.runtime.lastError)
-					console.log("Error: " + chrome.runtime.lastError.message)
-				else if (response.lastActiveTime && response.lastActiveTime <= 30) {
-					var siteHost = getSiteHost(activeTab);
-					
-					chrome.storage.local.get({
-						siteTimeLimitedList: new Array(),
-						siteTimeLimitedTime: 0,
-						siteTimeLimitedType: "Alert",
-						visitedSitesDictionary: {}
-					}, function (items) {
-						var limitedSites = items.siteTimeLimitedList;
-						var limitTime = items.siteTimeLimitedTime * 60;
-						var sitesDictionary = items.visitedSitesDictionary;
-						
-						console.log("limited sites: " + limitedSites);
-						var index = binarySearch(siteHost, limitedSites, 0, limitedSites.length - 1);
-						if (index === -1) //If current site isn't a time-limited site: return.
-							return;
-						
-						console.log(siteHost + " is a time-limited site. index=" + index);
-						var todayDate = getTodayDateFormatted();
-						
-						if (!sitesDictionary[todayDate]) //If the array of sites we have visited today is empty: return.
-							return;
-						
-						console.log("site dictionary for today is not empty");
-						var sitesToday = sitesDictionary[todayDate];
-						
-						index = binarySearchSites(siteHost, sitesToday, 0, sitesToday.length - 1);
-						if (index === -1) //If current site isn't in the list of sites visited today: return.
-							return;
-						console.log(siteHost + " has been visited today.");
-						//Calculate time spent on time-limited sites today.
-						var timeSpentOnLimitedSitesToday = 0;
-						for (i = 0; i < limitedSites.length; i++) {
-							index = binarySearchSites(limitedSites[i], sitesToday, 0, sitesToday.length - 1);
-
-							if (index > -1) {
-								timeSpentOnLimitedSitesToday += sitesToday[index].time;
-								console.log("time spend on " + limitedSites[i] + "(" + sitesToday[index].host + "): " + sitesToday[index].time);
-							}
-						}
-						console.log("timeSpentOnLimitedSitesToday: " + timeSpentOnLimitedSitesToday);
-						if (timeSpentOnLimitedSitesToday < limitTime) //If the user hasn't reached his time limit: return.
-							return;
-							
-						//User is on a time-limited site and is past his time limit: 
-						if (items.siteTimeLimitedType === "Alert")
-							chrome.tabs.sendMessage(activeTab.id, { requestType: "addNotification", notificationReason: "Time Expired:", notificationDescription: "You have spent " + Math.floor(timeSpentOnLimitedSitesToday / 60) + " minutes on time-limited sites today."});
-						else
-							chrome.tabs.sendMessage(activeTab.id, { requestType: "redirect"});
-					});	
-					
-				}
-			});
+	var snooze = false;
+	chrome.storage.local.get({
+		siteTimeLimitedSnoozeEnd: 0
+	}, function (items) {
+		var now = new Date();
+		console.log("now.getTime()-items.siteTimeLimitedSnoozeEnd: " + (now.getTime() - items.siteTimeLimitedSnoozeEnd));
+		if (now.getTime() < items.siteTimeLimitedSnoozeEnd) {
+			console.log("Time-Limited Alerts On Snooze");
+			return;
 		}
-	});
+		
+		//Get the active browser tab. It must be completely loaded.
+		chrome.tabs.query({active: true, currentWindow: true, status: "complete"}, function(tabArray) {
+			// since only one tab should be active and in the current window at once
+			// the return variable should only have one entry
+			var activeTab = tabArray[0];
+			
+			if (activeTab) { //If we got a tab that is active in the current window and completely loaded: ...
+				chrome.tabs.sendMessage(activeTab.id, { requestType: "getLastActiveTime" }, function(response)  { //Send a message to the tab requesting its last active time.
+					if (chrome.runtime.lastError)
+						console.log("Error: " + chrome.runtime.lastError.message)
+					else if (response.lastActiveTime && response.lastActiveTime <= 30) {
+						var siteHost = getSiteHost(activeTab);
+						
+						chrome.storage.local.get({
+							siteTimeLimitedList: new Array(),
+							siteTimeLimitedTime: 0,
+							siteTimeLimitedType: "Alert",
+							visitedSitesDictionary: {}
+						}, function (items) {
+							var limitedSites = items.siteTimeLimitedList;
+							var limitTime = items.siteTimeLimitedTime * 60;
+							var sitesDictionary = items.visitedSitesDictionary;
+							
+							console.log("limited sites: " + limitedSites);
+							var index = binarySearch(siteHost, limitedSites, 0, limitedSites.length - 1);
+							if (index === -1) //If current site isn't a time-limited site: return.
+								return;
+							
+							console.log(siteHost + " is a time-limited site. index=" + index);
+							var todayDate = getTodayDateFormatted();
+							
+							if (!sitesDictionary[todayDate]) //If the array of sites we have visited today is empty: return.
+								return;
+							
+							console.log("site dictionary for today is not empty");
+							var sitesToday = sitesDictionary[todayDate];
+							
+							index = binarySearchSites(siteHost, sitesToday, 0, sitesToday.length - 1);
+							if (index === -1) //If current site isn't in the list of sites visited today: return.
+								return;
+							console.log(siteHost + " has been visited today.");
+							//Calculate time spent on time-limited sites today.
+							var timeSpentOnLimitedSitesToday = 0;
+							for (i = 0; i < limitedSites.length; i++) {
+								index = binarySearchSites(limitedSites[i], sitesToday, 0, sitesToday.length - 1);
+
+								if (index > -1) {
+									timeSpentOnLimitedSitesToday += sitesToday[index].time;
+									console.log("time spend on " + limitedSites[i] + "(" + sitesToday[index].host + "): " + sitesToday[index].time);
+								}
+							}
+							console.log("timeSpentOnLimitedSitesToday: " + timeSpentOnLimitedSitesToday);
+							if (timeSpentOnLimitedSitesToday < limitTime) //If the user hasn't reached his time limit: return.
+								return;
+								
+							//User is on a time-limited site and is past his time limit: 
+							//chrome.tabs.sendMessage(activeTab.id, { requestType: "addNotification", notificationReason: "Time Expired", notificationDescription: "You have spent " + Math.floor(timeSpentOnLimitedSitesToday / 60) + " minutes on time-limited sites today."});
+							chrome.tabs.sendMessage(activeTab.id, { requestType: "timeLimitedAlert", timeSpent: Math.floor(timeSpentOnLimitedSitesToday / 60) });
+							console.log("Sent time limited alert.");
+						});	
+						
+					}
+				});
+			}
+		});
+	});		
 }
 
 //checkLastGoalView: Notifies the user if he has not visited his goals page in 7 or more days.

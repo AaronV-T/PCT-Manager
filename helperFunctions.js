@@ -1,3 +1,4 @@
+//binarySearch: Searches an array for a given key.
 function binarySearch(key, givenArray, minIndex, maxIndex) {
 	if (maxIndex < minIndex) //Return -1 (key not found).
 		return -1;
