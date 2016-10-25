@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 		addNotification(msg.notificationReason, msg.notificationDescription);
 	else if (msg.requestType === "blacklistThisSite") 
 		blacklistThisSite();
-	else if (msg.requestType === "timeLimitedAlert" && msg.timeSpent) {
-		timeLimitAlert(msg.timeSpent);
+	else if (msg.requestType === "timeLimitedAlert" && msg.limitNumber && msg.timeSpent) {
+		timeLimitAlert(msg.limitNumber, msg.timeSpent);
 	}
 });

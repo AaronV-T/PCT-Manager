@@ -193,19 +193,35 @@
 			<textarea id="timeLimitedTextarea" style="resize:none; width:75%; height:300px;"></textarea>
 			<br>
 			<label>
-				<input type="text" id="timeLimitedTimeText" maxlength="4" size="4">
-				Time (in minutes) to allow on limited sites.
+				<input type="text" id="timeLimitedTimeText1" maxlength="4" size="4">
+				Time (in minutes).
 			</label>
-			<br>
 			<label>
-				<select id="timeLimitTypeDropdown">
+				<select id="timeLimitTypeDropdown1">
+					<option value="None">None</option>
 					<option value="Alert">Alert</option>
 					<option value="Block">Block</option>
+					<option value="StrictBlock">Strict Block</option>
 				</select>
 				Behavior when time limit reached.
 			</label>
 			<br>
-			<button id="saveTimeLimitedInfo">Save Time-Limited Info</button>
+			<label>
+				<input type="text" id="timeLimitedTimeText2" maxlength="4" size="4">
+				Time (in minutes).
+			</label>
+			<label>
+				<select id="timeLimitTypeDropdown2">
+					<option value="None">None</option>
+					<option value="Alert">Alert</option>
+					<option value="Block">Block</option>
+					<option value="StrictBlock">Strict Block</option>
+				</select>
+				Behavior when time limit reached.
+			</label>
+			<br>
+			<button id="saveTimeLimitedInfo">Save Time-Limited Settings</button>
+			<div id="tlStatus"></div>
 		</div>
 	</div>
 </div>

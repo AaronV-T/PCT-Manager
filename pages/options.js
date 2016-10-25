@@ -57,8 +57,10 @@ function restore_options() {
 		chrome.storage.local.get({
 			siteBlacklist: new Array(),
 			siteTimeLimitedList: new Array(),
-			siteTimeLimitedTime: 0,
-			siteTimeLimitedType: "Alert",
+			siteTimeLimitedTime1: 0,
+			siteTimeLimitedTime2: 0,
+			siteTimeLimitedType1: "None",
+			siteTimeLimitedType2: "None",
 			siteWhitelist: new Array()
 		}, function(items2) {
 			blacklist = items2.siteBlacklist;
@@ -69,12 +71,26 @@ function restore_options() {
 			populateTimeLimitedList();
 			populateWhitelist();
 			
-			document.getElementById("timeLimitedTimeText").value = items2.siteTimeLimitedTime;
-			console.log(items2.siteTimeLimitedType);
-			if(items2.siteTimeLimitedType === "Alert")
-				document.getElementById("timeLimitTypeDropdown").selectedIndex = 0
-			else 
-				document.getElementById("timeLimitTypeDropdown").selectedIndex = 1
+			document.getElementById("timeLimitedTimeText1").value = items2.siteTimeLimitedTime1;
+			document.getElementById("timeLimitedTimeText2").value = items2.siteTimeLimitedTime2;
+			
+			if(items2.siteTimeLimitedType1 === "None")
+				document.getElementById("timeLimitTypeDropdown1").selectedIndex = 0
+			else if(items2.siteTimeLimitedType1 === "Alert")
+				document.getElementById("timeLimitTypeDropdown1").selectedIndex = 1
+			else if(items2.siteTimeLimitedType1 === "Block")
+				document.getElementById("timeLimitTypeDropdown1").selectedIndex = 2
+			else if(items2.siteTimeLimitedType1 === "StrictBlock")
+				document.getElementById("timeLimitTypeDropdown1").selectedIndex = 3
+			
+			if(items2.siteTimeLimitedType2 === "None")
+				document.getElementById("timeLimitTypeDropdown2").selectedIndex = 0
+			else if(items2.siteTimeLimitedType2 === "Alert")
+				document.getElementById("timeLimitTypeDropdown2").selectedIndex = 1
+			else if(items2.siteTimeLimitedType2 === "Block")
+				document.getElementById("timeLimitTypeDropdown2").selectedIndex = 2
+			else if(items2.siteTimeLimitedType2 === "StrictBlock")
+				document.getElementById("timeLimitTypeDropdown2").selectedIndex = 3
 			
 			document.getElementById('mainDiv').style.display = "inline";
 			document.getElementById('loadingDiv').style.display = "none";
@@ -204,14 +220,26 @@ function saveBlacklist() {
 
 function saveTimeLimitedInfo() {
 	timeLimitedList = parseArrayFromTextarea("timeLimitedTextarea");
-	var timeLimitedTime = document.getElementById("timeLimitedTimeText").value;
-	var timeLimitedType = document.getElementById("timeLimitTypeDropdown").options[document.getElementById("timeLimitTypeDropdown").selectedIndex].value;
+	var timeLimitedTime1 = document.getElementById("timeLimitedTimeText1").value;
+	var timeLimitedTime2 = document.getElementById("timeLimitedTimeText2").value;
+	if (isNaN(timeLimitedTime1) || isNaN(timeLimitedTime2)) {
+		var tlStatus = document.getElementById('tlStatus');
+		tlStatus.textContent = 'Changes not saved. Please verify that you entered a real number in the "Time" text boxes.';
+		setTimeout(function() {
+			tlStatus.textContent = '';
+		}, 4000);
+		return;
+	}
+	var timeLimitedType1 = document.getElementById("timeLimitTypeDropdown1").options[document.getElementById("timeLimitTypeDropdown1").selectedIndex].value;
+	var timeLimitedType2 = document.getElementById("timeLimitTypeDropdown2").options[document.getElementById("timeLimitTypeDropdown2").selectedIndex].value;
 	
 	//Save the list and repopulate it.
 	chrome.storage.local.set({
 		siteTimeLimitedList: timeLimitedList,
-		siteTimeLimitedTime: timeLimitedTime,
-		siteTimeLimitedType: timeLimitedType
+		siteTimeLimitedTime1: timeLimitedTime1,
+		siteTimeLimitedTime2: timeLimitedTime2,
+		siteTimeLimitedType1: timeLimitedType1,
+		siteTimeLimitedType2: timeLimitedType2
 	}, function(items2) {
 		populateTimeLimitedList();
 	});

@@ -215,12 +215,13 @@ function checkTimeLimitedSites() {
 						
 						chrome.storage.local.get({
 							siteTimeLimitedList: new Array(),
-							siteTimeLimitedTime: 0,
-							siteTimeLimitedType: "Alert",
+							siteTimeLimitedTime1: 0,
+							siteTimeLimitedTime2: 0,
 							visitedSitesDictionary: {}
 						}, function (items) {
 							var limitedSites = items.siteTimeLimitedList;
-							var limitTime = items.siteTimeLimitedTime * 60;
+							var limitTime1 = items.siteTimeLimitedTime1 * 60;
+							var limitTime2 = items.siteTimeLimitedTime2 * 60;
 							var sitesDictionary = items.visitedSitesDictionary;
 							
 							console.log("limited sites: " + limitedSites);
@@ -252,13 +253,12 @@ function checkTimeLimitedSites() {
 								}
 							}
 							console.log("timeSpentOnLimitedSitesToday: " + timeSpentOnLimitedSitesToday);
-							if (timeSpentOnLimitedSitesToday < limitTime) //If the user hasn't reached his time limit: return.
-								return;
-								
-							//User is on a time-limited site and is past his time limit: 
-							//chrome.tabs.sendMessage(activeTab.id, { requestType: "addNotification", notificationReason: "Time Expired", notificationDescription: "You have spent " + Math.floor(timeSpentOnLimitedSitesToday / 60) + " minutes on time-limited sites today."});
-							chrome.tabs.sendMessage(activeTab.id, { requestType: "timeLimitedAlert", timeSpent: Math.floor(timeSpentOnLimitedSitesToday / 60) });
-							console.log("Sent time limited alert.");
+							if (timeSpentOnLimitedSitesToday >= limitTime1) //If the user hasn reached his time limit: ...
+								chrome.tabs.sendMessage(activeTab.id, { requestType: "timeLimitedAlert", limitNumber: 1, timeSpent: Math.floor(timeSpentOnLimitedSitesToday / 60) });
+							if (timeSpentOnLimitedSitesToday >= limitTime2) //If the user hasn reached his time limit: ...
+								chrome.tabs.sendMessage(activeTab.id, { requestType: "timeLimitedAlert", limitNumber: 2, timeSpent: Math.floor(timeSpentOnLimitedSitesToday / 60) });
+							
+							
 						});	
 						
 					}
